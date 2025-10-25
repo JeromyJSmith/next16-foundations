@@ -14,7 +14,6 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 - **Biome** - Linting and formatting
 - **Husky** - Git hooks for code quality
 - **PWA** - Progressive Web App support
-- **Starlight** - Documentation site with Astro
 - **Tauri** - Build native desktop applications
 - **Turborepo** - Optimized monorepo build system
 
@@ -58,22 +57,24 @@ Open [http://localhost:3001](http://localhost:3001) in your browser to see your 
 live-steam-app/
 ├── apps/
 │   └── web/         # Fullstack application (Next.js)
-│   ├── docs/        # Documentation site (Astro Starlight)
 ├── packages/
-│   ├── api/         # API layer / business logic
-│   └── db/          # Database schema & queries
+│   ├── api/         # API layer / business logic (tRPC)
+│   └── db/          # Database layer (Drizzle ORM)
 ```
 
 ## Available Scripts
 
 - `pnpm dev`: Start all applications in development mode
+- `pnpm dev:web`: Start web app only
 - `pnpm build`: Build all applications
 - `pnpm check-types`: Check TypeScript types across all apps
-- `pnpm db:push`: Push schema changes to database
-- `pnpm db:studio`: Open database studio UI
 - `pnpm check`: Run Biome formatting and linting
+- `pnpm db:push`: Push schema changes to database
+- `pnpm db:studio`: Open Drizzle Studio UI
+- `pnpm db:generate`: Generate database types
+
+## Desktop & PWA
+
 - `cd apps/web && pnpm generate-pwa-assets`: Generate PWA assets
 - `cd apps/web && pnpm desktop:dev`: Start Tauri desktop app in development
 - `cd apps/web && pnpm desktop:build`: Build Tauri desktop app
-- `cd apps/docs && pnpm dev`: Start documentation site
-- `cd apps/docs && pnpm build`: Build documentation site

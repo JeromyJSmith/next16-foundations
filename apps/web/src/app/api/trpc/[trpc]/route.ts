@@ -1,7 +1,7 @@
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { appRouter } from "@live-steam-app/api/routers/index";
 import { createContext } from "@live-steam-app/api/context";
-import { NextRequest } from "next/server";
+import { appRouter } from "@live-steam-app/api/routers/index";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import type { NextRequest } from "next/server";
 
 function handler(req: NextRequest) {
 	return fetchRequestHandler({

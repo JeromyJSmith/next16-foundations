@@ -42,6 +42,14 @@ lerna-debug.log*
 # Testing
 coverage
 .nyc_output
+test-results
+playwright-report
+.vitest
+
+# Documentation and local env examples
+SETUP.md
+UPGRADE_PLAN.md
+apps/web/.env.example
 
 # Misc
 *.tgz
