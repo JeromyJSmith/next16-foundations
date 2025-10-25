@@ -1,0 +1,1096 @@
+Title: CopilotKit | The Agentic Framework for In-App AI Copilots
+
+URL Source: http://www.copilotkit.ai/blog/how-to-make-agents-talk-to-each-other-and-your-app-using-a2a-ag-ui
+
+Markdown Content:
+TL;DR
+-----
+
+In this guide, you will learn how to build full-stack Agent-to-Agent(A2A) communication between AI agents from different AI agent frameworks using A2A Protocol, AG-UI Protocol, and CopilotKit.
+
+Before we jump in, here is what we will cover:
+
+*   What is A2A Protocol?
+*   Setting up A2A multi-agent communication using CLI
+*   Integrating AI agents from different agent frameworks with the A2A protocol
+*   Building a frontend for the AG-UI and A2A multi-agent communication using CopilotKit
+
+Here is a preview of what we will be building:
+
+What is A2A Protocol?
+---------------------
+
+![Image 1: A2A Diagram](https://cdn.prod.website-files.com/669a24c14f4dcb77f6f97034/68e6c3fa465aeacc47794d70_https%253A%252F%252Fdev-to-uploads.s3.amazonaws.com%252Fuploads%252Farticles%252F43h76duxy2iq1tqoiifa.webp)
+
+The **A2A (Agent-to-Agent) Protocol** is a standardized communication framework by Google that enables different AI agents to discover, communicate, and collaborate no matter of the framework in a distributed system.
+
+The A2A protocol is designed to facilitate inter-agent communication where agents can call other agents as tools or services, creating a network of specialized AI capabilities.
+
+The key features of the A2A protocol include:
+
+*   **A2A Client**: This is the boss agent (we call it the "client agent") that starts everything. It figures out what needs to be done, spots the right helper agents, and hands off the jobs to them. Think of it as the project manager in your code.
+*   **A2A Agent**: An AI agent that sets up a simple web address (an HTTP endpoint) following A2A rules. It listens for incoming requests, crunches the task, and sends back results or updates. Super useful for making your agent "public" and ready to collaborate.
+*   **Agent Card**: Imagine a digital ID card in JSON format—easy to read and share. It holds basic info about an A2A agent, like its name, what it does, and how to connect.
+*   **Agent Skills**: These are like job descriptions for your agent. Each skill outlines one specific thing it's awesome at (e.g., "summarize articles" or "generate images"). Clients read these to know exactly what tasks to assign—no guessing games!
+*   **A2A Executor**: The brains behind the scenes. It's a function in your code that does the heavy lifting: takes a request, runs the logic to solve the task, and spits out a response or triggers events.
+*   **A2A Server**: The web server side of things. It turns your agent's skills into something shareable over the internet. You'll set it up with A2A's request handler, build a lightweight web app using Starlette (a Python web framework), and fire it up with Uvicorn (a speedy server runner). Boom—your agent is online and ready for action!
+
+If you want to dive deeper into how the A2A protocol works and its setup, check out the docs here: [A2A protocol docs](https://a2a-protocol.org/latest/).
+
+![Image 2: Image from Notion](https://cdn.prod.website-files.com/669a24c14f4dcb77f6f97034/68e6c3fa465aeacc47794d6b_https%253A%252F%252Fdev-to-uploads.s3.amazonaws.com%252Fuploads%252Farticles%252F6su1rumx90gxs55u5e8v.webp)
+
+Now that you have learned what the A2A protocol is, let us see how to use it together with AG-UI and CopilotKit to build full-stack A2A AI agents.
+
+Prerequisites
+-------------
+
+To fully understand this tutorial, you need to have a basic understanding of React or Next.js
+
+We'll also make use of the following:
+
+*   [Python](https://www.python.org/downloads/) - a popular programming language for building AI agents with AI agent frameworks; make sure it is installed on your computer.
+*   [AG-UI Protocol](https://go.copilotkit.ai/ag-ui-github) - The Agent User Interaction Protocol (AG-UI), developed by CopilotKit, is an open-source, lightweight, event-based protocol that facilitates rich, real-time interactions between the frontend and your AI agent backend.
+*   [Google ADK](https://google.github.io/adk-docs/) - an open-source framework designed by Google to simplify the process of building complex and production-ready AI agents.
+*   [LangGraph](https://www.langchain.com/langgraph) - a framework for creating and deploying AI agents. It also helps to define the control flows and actions to be performed by the agent.
+*   [Gemini API Key](https://makersuite.google.com/app/apikey) - an API key to enable you to perform various tasks using the Gemini models for ADK agents.
+*   [CopilotKit](https://go.copilotkit.ai/copilotkit) - an open-source copilot framework for building custom AI chatbots, in-app AI agents, and text areas.
+
+Setting up A2A multi-agents communication using CLI
+---------------------------------------------------
+
+In this section, you will learn how to set up an A2A client (orchestrator agent) + A2A agents using a CLI command that sets up the backend using Google ADK with AG-UI protocol and the frontend using CopilotKit.
+
+[**Check out AG-UI's GitHub ⭐️**](https://go.copilotkit.ai/ag-ui-github)
+
+Let’s get started.
+
+### Step 1: Run CLI command
+
+If you don’t already have a pre-configured AG-UI agent, you can set up one quickly by running the CLI command below in your terminal.
+
+`npx copilotkit@latest create -f a2a`
+
+Then give your project a name as shown below.
+
+![Image 3: Image from Notion](https://cdn.prod.website-files.com/669a24c14f4dcb77f6f97034/68e6c44997a8297052d2d68c_https%253A%252F%252Fdev-to-uploads.s3.amazonaws.com%252Fuploads%252Farticles%252Fw9m68ylx6rrnlp0ae12d.webp)
+
+### Step 2: Install frontend dependencies
+
+Once your project has been created successfully, install dependencies using your preferred package manager:
+
+`npm install`
+
+### Step 3: Install backend dependencies
+
+After installing the frontend dependencies, install the backend dependencies:
+
+```
+cd agents
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+cd ..
+```
+
+### Step 4: Set up environment variables
+
+Once you have installed the backend dependencies, set up environment variables:
+
+```
+cp .env.example .env
+# Edit .env and add your API keys:
+# GOOGLE_API_KEY=your_google_api_key
+# OPENAI_API_KEY=your_openai_api_key
+```
+
+### Step 5: Start all services
+
+After setting up the environment variables, start all services that include the backend and the frontend.
+
+`npm run dev`
+
+Once the development server is running, navigate to [http://localhost:3000/](http://localhost:3000/) and you should see your A2A multi-agents frontend up and running.
+
+![Image 4: Image from Notion](https://cdn.prod.website-files.com/669a24c14f4dcb77f6f97034/68e6c5052e1f4d141fb6b5d0_https%253A%252F%252Fdev-to-uploads.s3.amazonaws.com%252Fuploads%252Farticles%252Fl6krdh27qzgbvgh88lya.webp)
+
+Congrats! You've successfully set up an A2A multi-agent communication. Try asking your agent to research a topic, like "Please research quantum computing". You'll see that it will send messages to the research agent and the analysis agent. Then, it will present the complete research and analysis to the user.
+
+Integrating the orchestrator agent with Google ADK and AG-UI protocol in the backend
+------------------------------------------------------------------------------------
+
+In this section, you will learn how to integrate your orchestrator agent with Google ADK and AG-UI protocol to expose it to the frontend as an ASGI application.
+
+Let’s jump in.
+
+### Step 1: Setting up the backend
+
+To get started, clone the [A2A-Travel repository](https://github.com/TheGreatBonnie/a2a-travel-demo-app) that consists of a Python-based backend (agents) and a Next.js frontend.
+
+Next, navigate to the backend directory:
+
+`cd agents`
+
+Then create a new Python virtual environment:
+
+`python -m venv .venv`
+
+After that, activate the virtual environment:
+
+`source .venv/bin/activate  # On Windows: .venv\Scripts\activate`
+
+Finally, install all the Python dependencies listed in the `requirements.txt` file.
+
+`pip install -r requirements.txt`
+
+### Step 2: Configure your Orchestrator ADK agent
+
+Once you have set up the backend, configure your orchestrator ADK agent by defining the agent name, specifying Gemini 2.5 Pro as the Large Language Model (LLM), and defining the agent’s instructions, as shown below in the `agents/orchestrator.py` file.
+
+```
+# Import Google ADK components for LLM agent creation
+from google.adk.agents import LlmAgent
+=== ORCHESTRATOR AGENT CONFIGURATION ===
+Create the main orchestrator agent using Google ADK's LlmAgent
+This agent coordinates all travel planning activities and manages the workflow
+orchestrator_agent = LlmAgent(
+name="OrchestratorAgent",
+model="gemini-2.5-pro",  # Use the more powerful Pro model for complex orchestration
+instruction="""
+You are a travel planning orchestrator agent. Your role is to coordinate specialized agents
+to create personalized travel plans.
+AVAILABLE SPECIALIZED AGENTS:
+
+1. **Itinerary Agent** (LangGraph) - Creates day-by-day travel itineraries with activities
+2. **Restaurant Agent** (LangGraph) - Recommends restaurants for breakfast, lunch, and dinner by day
+3. **Weather Agent** (ADK) - Provides weather forecasts and packing advice
+4. **Budget Agent** (ADK) - Estimates travel costs and creates budget breakdowns
+
+CRITICAL CONSTRAINTS:
+- You MUST call agents ONE AT A TIME, never make multiple tool calls simultaneously
+- After making a tool call, WAIT for the result before making another tool call
+- Do NOT make parallel/concurrent tool calls - this is not supported
+
+RECOMMENDED WORKFLOW FOR TRAVEL PLANNING:
+
+// ...
+
+""",
+
+)
+```
+
+### Step 3: Create an ADK middleware agent instance
+
+After configuring your orchestrator ADK agent, create an ADK middleware agent instance that wraps your orchestrator ADK agent to integrate it with AG-UI protocol, as shown below in the `agents/orchestrator.py` file.
+
+```
+Import AG-UI ADK components for frontend integration
+from ag_ui_adk import ADKAgent
+// ...
+=== AG-UI PROTOCOL INTEGRATION ===
+Wrap the orchestrator agent with AG-UI Protocol capabilities
+This enables frontend communication and provides the interface for user interactions
+adk_orchestrator_agent = ADKAgent(
+adk_agent=orchestrator_agent,          # The core LLM agent we created above
+app_name="orchestrator_app",           # Unique application identifier
+user_id="demo_user",                   # Default user ID for demo purposes
+session_timeout_seconds=3600,          # Session timeout (1 hour)
+use_in_memory_services=True            # Use in-memory storage for simplicity
+)
+```
+
+### Step 4: Configure a FastAPI endpoint
+
+Once you have created an ADK middleware agent instance, configure a FastAPI endpoint that exposes your AG-UI wrapped orchestrator ADK agent to the frontend, as shown below in the `agents/orchestrator.py` file.
+
+```
+Import necessary libraries for web server and environment variables
+import os
+import uvicorn
+Import FastAPI for creating HTTP endpoints
+from fastapi import FastAPI
+// ...
+=== FASTAPI WEB APPLICATION SETUP ===
+Create the FastAPI application that will serve the orchestrator agent
+This provides HTTP endpoints for the AG-UI Protocol communication
+app = FastAPI(title="Travel Planning Orchestrator (ADK)")
+Add the ADK agent endpoint to the FastAPI application
+This creates the necessary routes for AG-UI Protocol communication
+add_adk_fastapi_endpoint(app, adk_orchestrator_agent, path="/")
+=== MAIN APPLICATION ENTRY POINT ===
+if name == "main":
+"""
+Main entry point when the script is run directly.
+This function:
+1. Checks for required environment variables (API keys)
+2. Configures the server port
+3. Starts the uvicorn server with the FastAPI application
+"""
+
+# Check for required Google API key
+if not os.getenv("GOOGLE_API_KEY"):
+    print("⚠️  Warning: GOOGLE_API_KEY environment variable not set!")
+    print("   Set it with: export GOOGLE_API_KEY='your-key-here'")
+    print("   Get a key from: https://aistudio.google.com/app/apikey")
+    print()
+
+# Get server port from environment variable, default to 9000
+port = int(os.getenv("ORCHESTRATOR_PORT", 9000))
+
+# Start the server with detailed information
+print(f"🚀 Starting Orchestrator Agent (ADK + AG-UI) on http://localhost:{port}")
+
+# Run the FastAPI application using uvicorn
+# host="0.0.0.0" allows external connections
+# port is configurable via the environment variable
+uvicorn.run(app, host="0.0.0.0", port=port)
+```
+
+Congrats! You've successfully integrated your orchestrator ADK Agent with AG-UI protocol, and it is available at [http://localhost:9000](http://localhost:8000/) (or specified port) endpoint.
+
+Integrating AI agents from different agent frameworks with the A2A protocol
+---------------------------------------------------------------------------
+
+In this section, you will learn how to integrate AI agents from different agent frameworks with A2A
+
+protocol.
+
+Let’s get started!
+
+### Step 1: Configure A2A remote agents
+
+To get started, configure your A2A remote agent, such as the itinerary agent that uses the LangGraph framework, as shown in the `agents/itinerary_agent.py` file.
+
+```
+import json
+from langgraph.graph import StateGraph, END
+from langchain_openai import ChatOpenAI
+=== MAIN AGENT CLASS ===
+class ItineraryAgent:
+"""
+Main agent class that handles itinerary generation using LangGraph workflow.
+"""
+def __init__(self):
+    self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7)
+
+    # Build and compile the LangGraph workflow
+    self.graph = self._build_graph()
+
+def _build_graph(self):
+    workflow = StateGraph(ItineraryState)
+    workflow.add_node("parse_request", self._parse_request)
+    workflow.add_node("create_itinerary", self._create_itinerary)
+    workflow.set_entry_point("parse_request")
+    workflow.add_edge("parse_request", "create_itinerary")
+    workflow.add_edge("create_itinerary", END)
+
+    # Compile the workflow into an executable graph
+    return workflow.compile()
+
+def _parse_request(self, state: "ItineraryState") -> "ItineraryState":
+    message = state["message"]
+
+    # Create a focused prompt for the extraction task
+    prompt = f"""
+    Extract the destination and number of days from this travel request.
+    Return ONLY a JSON string with 'destination' and 'days' fields.
+
+    Request: {message}
+
+    Example output: {{"destination": "Tokyo", "days": 3}}
+    """
+
+    # Get LLM response for parsing
+    response = self.llm.invoke(prompt)
+    print(response.content)  # Debug: print LLM response
+
+    try:
+        parsed = json.loads(response.content)
+        state["destination"] = parsed.get("destination", "Unknown")
+        state["days"] = int(parsed.get("days", 3))
+    except Exception as e:
+        print(f"⚠️ Failed to parse request: {e}")
+        state["destination"] = "Unknown"
+        state["days"] = 3
+
+    return state
+
+def _create_itinerary(self, state: "ItineraryState") -> "ItineraryState":
+    destination = state["destination"]
+    days = state["days"]
+
+    prompt = f"""
+    Create a detailed {days}-day travel itinerary for {destination}.
+    Make it realistic, interesting, and include specific place names.
+    Return ONLY valid JSON, no markdown, no other text.
+    """
+
+    # Generate itinerary using LLM
+    response = self.llm.invoke(prompt)
+    content = response.content.strip()
+
+    # Clean up response (remove code fences if present)
+    if "```json" in content:
+        content = content.split("```json")[1].split("```")[0].strip()
+    elif "```" in content:
+        content = content.split("```")[1].split("```")[0].strip()
+
+    try:
+        structured_data = json.loads(content)
+        validated_itinerary = StructuredItinerary(**structured_data)
+
+        state["structured_itinerary"] = validated_itinerary.model_dump()
+        state["itinerary"] = json.dumps(
+            validated_itinerary.model_dump(), indent=2
+        )
+
+        print("✅ Successfully created structured itinerary")
+
+    except Exception as e:
+        print(f"⚠️ Failed to parse itinerary JSON: {e}")
+        state["itinerary"] = json.dumps(
+            {"error": "Failed to generate valid itinerary"}, indent=2
+        )
+
+    return state
+
+async def invoke(self, message: "Message") -> str:
+    message_text = message.parts[0].root.text
+    print("Invoking itinerary agent with message:", message_text)
+
+    result = self.graph.invoke({
+        "message": message_text,
+        "destination": "",
+        "days": 3,
+        "itinerary": ""
+    })
+
+    return result["itinerary"]
+```
+
+### Step 2: Set up A2A remote agent skills and agent card
+
+Once you have configured A2A remote agents, set up the agent to be discoverable and callable by other agents.
+
+To do that, define the specific skill each agent provides, together with the public agent card that other agents can discover, as shown in the `agents/itinerary_agent.py` file.
+
+```
+from a2a.types import ( AgentCapabilities, AgentCard, AgentSkill)
+// ...
+Define the specific skill this agent provides
+skill = AgentSkill(
+id='itinerary_agent',
+name='Itinerary Planning Agent',
+description='Creates detailed day-by-day travel itineraries using LangGraph',
+tags=['travel', 'itinerary', 'langgraph'],
+examples=[
+'Create a 3-day itinerary for Tokyo',
+'Plan a week-long trip to Paris',
+'What should I do in New York for 5 days?'
+],
+)
+Define the public agent card that other agents can discover
+public_agent_card = AgentCard(
+name='Itinerary Agent',
+description='LangGraph-powered agent that creates detailed day-by-day travel itineraries in plain text format with activities and meal recommendations.',
+url=f'http://localhost:{port}/',
+version='1.0.0',
+defaultInputModes=['text'],      # Accepts text input
+defaultOutputModes=['text'],     # Returns text output
+capabilities=AgentCapabilities(streaming=True),  # Supports streaming responses
+skills=[skill],                  # List of skills this agent provides
+supportsAuthenticatedExtendedCard=False,  # No authentication required
+)
+```
+
+### Step 3: Configure A2A agent executor
+
+After setting up each agent's skills together with the agent card, configure each agent with an A2A agent executor that handles A2A requests and responses, as shown in the `agents/itinerary_agent.py` file.
+
+```
+from a2a.server.agent_execution import AgentExecutor, RequestContext
+// ...
+=== A2A PROTOCOL EXECUTOR ===
+class ItineraryAgentExecutor(AgentExecutor):
+"""
+An executor class that bridges the A2A Protocol with our ItineraryAgent.
+This class handles the A2A Protocol lifecycle:
+- Receives execution requests from other agents
+- Delegates to our ItineraryAgent for processing
+- Sends results back through the event queue
+"""
+
+def __init__(self):
+    """Initialize the executor with an instance of our agent"""
+    self.agent = ItineraryAgent()
+
+async def execute(
+    self,
+    context: RequestContext,
+    event_queue: EventQueue,
+) -> None:
+    """
+    Execute an itinerary generation request.
+
+    This method:
+    1. Calls our agent with the incoming message
+    2. Formats the result as an A2A text message
+    3. Sends the response through the event queue
+
+    Args:
+        context: Request context containing the message and metadata
+        event_queue: Queue for sending response events back to caller
+    """
+    # Generate itinerary using our agent
+    result = await self.agent.invoke(context.message)
+
+    # Send result back through A2A Protocol event queue
+    await event_queue.enqueue_event(new_agent_text_message(result))
+
+async def cancel(
+    self, context: RequestContext, event_queue: EventQueue
+) -> None:
+    """
+    Handle cancellation requests (not implemented).
+
+    For this agent, we don't support cancellation since the itinerary
+    Generation is typically fast and non-interruptible.
+    """
+    raise Exception('cancel not supported')
+```
+
+### Step 4: Set up the A2A agent server
+
+Once you have configured the A2A agent executor for each remote agent, set up each agent's A2A agent server that configures the A2A Protocol request handler, creates the Starlette web application, and starts the uvicorn server, as shown in the `agents/itineray_agent.py` file.
+
+```
+# Import A2A Protocol components for inter-agent communication
+from a2a.server.apps import A2AStarletteApplication
+from a2a.server.request_handlers import DefaultRequestHandler
+from a2a.server.tasks import InMemoryTaskStore
+// ...
+Get port from environment variable, default to 9001
+port = int(os.getenv("ITINERARY_PORT", 9001))
+=== MAIN APPLICATION SETUP ===
+def main():
+"""
+Main function that sets up and starts the A2A Protocol server.
+This function:
+1. Checks for required environment variables
+2. Sets up the A2A Protocol request handler
+3. Creates the Starlette web application
+4. Starts the uvicorn server
+"""
+
+# Check for required OpenAI API key
+if not os.getenv("OPENAI_API_KEY"):
+    print("⚠️  Warning: OPENAI_API_KEY environment variable not set!")
+    print("   Set it with: export OPENAI_API_KEY='your-key-here'")
+    print()
+
+# Create the A2A Protocol request handler
+# This handles incoming requests and manages the task lifecycle
+request_handler = DefaultRequestHandler(
+    agent_executor=ItineraryAgentExecutor(),  # Our custom executor
+    task_store=InMemoryTaskStore(),           # Simple in-memory task storage
+)
+
+# Create the A2A Starlette web application
+# This provides the HTTP endpoints for A2A Protocol communication
+server = A2AStarletteApplication(
+    agent_card=public_agent_card,           # Public agent information
+    http_handler=request_handler,           # Request processing logic
+    extended_agent_card=public_agent_card,  # Extended agent info (same as public)
+)
+
+# Start the server
+print(f"🗺️  Starting Itinerary Agent (LangGraph + A2A) on http://localhost:{port}")
+uvicorn.run(server.build(), host='0.0.0.0', port=port)
+
+=== ENTRY POINT ===
+if name == 'main':
+"""
+Entry point when the script is run directly.
+This allows the agent to be started as a standalone service:
+python itinerary_agent.py
+"""
+main()
+</span>
+```
+
+Congratulations! You've successfully integrated your remote agents with the A2A protocol, and now the orchestrator agent can delegate tasks to the agents.
+
+Building a frontend for the AG-UI and A2A multi-agent communication using CopilotKit
+------------------------------------------------------------------------------------
+
+In this section, you will learn how to add a frontend for the AG-UI and A2A multi-agent communication using CopilotKit, which runs anywhere that React runs.
+
+Let’s get started.
+
+‍
+
+### Step 1: Setting up the frontend
+
+To get started, install the frontend dependencies in the [A2A-Travel repository](https://github.com/TheGreatBonnie/a2a-travel-demo-app) you cloned earlier.
+
+`npm install`
+
+Then configure the environment variables and edit the .env file, and add your GOOGLE_API_KEY and OPENAI_API_KEY.
+
+`cp .env.example .env`
+
+Finally, start all backend and frontend servers:
+
+`npm run dev`
+
+The command starts UI on `http://localhost:3000`, Orchestrator on `http://localhost:9000`, Itinerary Agent on `http://localhost:9001`, Budget Agent on `http://localhost:9002`, Restaurant Agent on `http://localhost:9003`, and Weather Agent on `http://localhost:9005`
+
+If you navigate to [http://localhost:3000/](http://localhost:3000/) , you should see the travel planning A2A multi-agent frontend up and running.
+
+![Image 5: Image from Notion](https://cdn.prod.website-files.com/669a24c14f4dcb77f6f97034/68e6d693727523763bd5bcf3_https%253A%252F%252Fdev-to-uploads.s3.amazonaws.com%252Fuploads%252Farticles%252Fghf3r5txygz37pj4gkkb.webp)
+
+### Step 2: Configure the CopilotKit API Route with A2A Middleware
+
+Once you have set up the frontend, configure the CopilotKit API Route with A2A Middleware to set up the connection between the frontend, AG-UI + ADK Orchestrator agent, and A2A agents, as shown in the `app/api/copilotkit/route.ts` file.
+
+```
+import {
+  CopilotRuntime,
+  ExperimentalEmptyAdapter,
+  copilotRuntimeNextJSAppRouterEndpoint,
+} from "@copilotkit/runtime";
+import { HttpAgent } from "@ag-ui/client";
+import { A2AMiddlewareAgent } from "@ag-ui/a2a-middleware";
+import { NextRequest } from "next/server";
+export async function POST(request: NextRequest) {
+// STEP 1: Define A2A agent URLs
+const itineraryAgentUrl =
+process.env.ITINERARY_AGENT_URL || "http://localhost:9001";
+const budgetAgentUrl =
+process.env.BUDGET_AGENT_URL || "http://localhost:9002";
+const restaurantAgentUrl =
+process.env.RESTAURANT_AGENT_URL || "http://localhost:9003";
+const weatherAgentUrl =
+process.env.WEATHER_AGENT_URL || "http://localhost:9005";
+// STEP 2: Define orchestrator URL (speaks AG-UI Protocol)
+const orchestratorUrl =
+process.env.ORCHESTRATOR_URL || "http://localhost:9000";
+// STEP 3: Wrap orchestrator with HttpAgent (AG-UI client)
+// the orchestrator agent we pass to the middleware needs to be an instance of a derivative of an ag-ui AbstractAgent
+// In this case, we have access to the agent via url, so we can gain an instance using the HttpAgent class
+const orchestrationAgent = new HttpAgent({
+url: orchestratorUrl,
+});
+// STEP 4: Create A2A Middleware Agent
+// This bridges AG-UI and A2A protocols by:
+// 1. Wrapping the orchestrator
+// 2. Registering all A2A agents
+// 3. Injecting send_message_to_a2a_agent tool
+// 4. Routing messages between orchestrator and A2A agents
+const a2aMiddlewareAgent = new A2AMiddlewareAgent({
+description:
+"Travel planning assistant with 4 specialized agents: Itinerary and Restaurant (LangGraph), Weather and Budget (ADK)",
+agentUrls: [
+  itineraryAgentUrl, // LangGraph + OpenAI
+  restaurantAgentUrl, // ADK + Gemini
+  budgetAgentUrl, // ADK + Gemini
+  weatherAgentUrl, // ADK + Gemini
+],
+
+orchestrationAgent,
+
+});
+// STEP 5: Create CopilotKit Runtime
+const runtime = new CopilotRuntime({
+agents: {
+a2a_chat: a2aMiddlewareAgent, // Must match frontend: <CopilotKit agent="a2a_chat>
+},
+});
+// STEP 6: Set up Next.js endpoint handler
+const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
+runtime,
+serviceAdapter: new ExperimentalEmptyAdapter(),
+endpoint: "/api/copilotkit",
+});
+return handleRequest(request);
+}
+```
+
+### Step 3: Set up the CopilotKit provider
+
+After configuring the CopilotKit API Route with A2A Middleware, set up the CopilotKit provider component that manages your A2A multi-agent sessions.
+
+To set up the CopilotKit Provider, the `<CopilotKit>` component must wrap the Copilot-aware parts of your application, as shown in the `components/travel-chat.tsx` file.
+
+```
+import { CopilotKit } from "@copilotkit/react-core";
+// ...
+/**
+
+MAIN COMPONENT: CopilotKit Provider Wrapper
+
+This is the main export that wraps the chat component with the CopilotKit provider.
+The provider configuration enables:
+
+Runtime connection to backend agents via /api/copilotkit endpoint
+
+A2A agent communication protocol
+
+Development console for debugging (disabled in production)
+*/
+export default function TravelChat({
+onItineraryUpdate,
+onBudgetUpdate,
+onWeatherUpdate,
+onRestaurantUpdate,
+}: TravelChatProps) {
+return (
+<CopilotKit
+runtimeUrl="/api/copilotkit" // Backend endpoint for agent communication
+showDevConsole={false} // Disable dev console in production
+agent="a2a_chat" // Specify A2A agent protocol
+
+);
+}
+```
+
+### Step 4: Configure a Copilot UI component
+
+Once you have set up the CopilotKit Provider, set up a Copilot UI component that enables you to interact with the AG-UI + A2A agents. CopilotKit ships with several built-in chat components, which include [CopilotPopup](https://docs.copilotkit.ai/reference/components/chat/CopilotPopup), [CopilotSidebar](https://docs.copilotkit.ai/reference/components/chat/CopilotSidebar), and [CopilotChat](https://docs.copilotkit.ai/reference/components/chat/CopilotChat).
+
+To set up a Copilot UI component, define it alongside your core page components, as shown in the `components/travel-chat.tsx` file.
+
+```
+import { CopilotChat } from "@copilotkit/react-ui";
+// ...
+const ChatInner = ({
+onItineraryUpdate,
+onBudgetUpdate,
+onWeatherUpdate,
+onRestaurantUpdate,
+}: TravelChatProps) => {
+// ...
+/**
+
+COPILOTKIT CHAT COMPONENT: Main chat interface
+
+The CopilotChat component provides the core chat interface with:
+
+Message history and real-time conversation
+
+Integration with all registered actions
+
+Customizable labels and instructions
+
+Built-in support for generative UI and HITL workflows
+*/
+return (
+
+<CopilotChat
+className="h-full"
+labels={{
+initial:
+"👋 Hi! I'm your travel planning assistant.\n\nAsk me to plan a trip and I'll coordinate with specialized agents to create your perfect itinerary!",
+}}
+instructions="You are a helpful travel planning assistant. Help users plan their trips by coordinating with specialized agents."
+/>
+
+);
+};
+```
+
+### Step 5: Render **Agent-to-Agent communication using Generative UI**
+
+After setting up a Copilot UI component, render Agent-to-Agent communication using [Generative UI](https://docs.copilotkit.ai/langgraph/generative-ui) in the chat component.
+
+To render Agent-to-Agent communication in the chat component in real-time, define a `useCopilotAction()` hook called `send_message_to_a2a_agent`, as shown in the `components/travel-chat.tsx` file.
+
+```
+import { useCopilotAction } from "@copilotkit/react-core";
+//A2A Communication visualization components
+import { MessageToA2A } from "./a2a/MessageToA2A";
+import { MessageFromA2A } from "./a2a/MessageFromA2A";
+// ...
+const ChatInner = ({
+onItineraryUpdate,
+onBudgetUpdate,
+onWeatherUpdate,
+onRestaurantUpdate,
+}: TravelChatProps) => {
+// ...
+useCopilotAction({
+name: "send_message_to_a2a_agent",
+description: "Sends a message to an A2A agent",
+available: "frontend", // This action runs on frontend only - no backend processing
+parameters: [
+  {
+    name: "agentName",
+    type: "string",
+    description: "The name of the A2A agent to send the message to",
+  },
+  {
+    name: "task",
+    type: "string",
+    description: "The message to send to the A2A agent",
+  },
+],
+// Custom render function creates visual A2A communication components
+render: (actionRenderProps: MessageActionRenderProps) => {
+  return (
+    <>
+      {/* MessageToA2A: Shows outgoing message (green box) */}
+      <MessageToA2A {...actionRenderProps} />
+      {/* MessageFromA2A: Shows agent response (blue box) */}
+      <MessageFromA2A {...actionRenderProps} />
+    </>
+  );
+},
+
+});
+// ...
+return (
+
+{/ ... /}
+
+);
+};
+```
+
+When the orchestrator agent sends requests or receives responses from the A2A agents, you should see the communication rendered on the chat component, as shown below.
+
+![Image 6: Image from Notion](https://cdn.prod.website-files.com/669a24c14f4dcb77f6f97034/68e6d7ad1640a2b278bbdcef_https%253A%252F%252Fdev-to-uploads.s3.amazonaws.com%252Fuploads%252Farticles%252Fm1352j26abzsdjular9k.webp)
+
+### Step 6: Implementing Human-in-the-Loop (HITL) in the frontend
+
+Human-in-the-loop (HITL) allows agents to request human input or approval during execution, making AI systems more reliable and trustworthy. This pattern is essential when building AI applications that need to handle complex decisions or actions that require human judgment.
+
+You can learn more about Human in the Loop [here](https://docs.copilotkit.ai/human-in-the-loop) on CopilotKit docs.
+
+![Image 7: Image from Notion](https://cdn.prod.website-files.com/669a24c14f4dcb77f6f97034/68e00bc717d3a674eaa70b44_https%253A%252F%252Fdev-to-uploads.s3.amazonaws.com%252Fuploads%252Farticles%252Fz017u90x0z3zabs444f3.webp)
+
+To implement Human-in-the-Loop (HITL) in the frontend, you need to use the CopilotKit [useCopilotKitAction](https://docs.copilotkit.ai/reference/hooks/useCopilotAction) hook with the `renderAndWaitForResponse` method, which allows returning values asynchronously from the render function, as shown in the `components/travel-chat.tsx` file.
+
+```
+const ChatInner = ({
+onItineraryUpdate,
+onBudgetUpdate,
+onWeatherUpdate,
+onRestaurantUpdate,
+}: TravelChatProps) => {
+// State management for HITL budget approval workflow
+// Tracks approval/rejection status for different budget proposals
+const [approvalStates, setApprovalStates] = useState<
+Record<string, { approved: boolean; rejected: boolean }>
+
+({});
+
+/**
+
+HITL FEATURE: Budget approval workflow with renderAndWaitForResponse
+
+This useCopilotAction demonstrates CopilotKit's Human-in-the-Loop (HITL)
+capabilities, which pause agent execution and wait for user interaction
+before continuing the workflow.
+
+Key features:
+
+renderAndWaitForResponse: Blocks agent until user provides input
+
+State management: Tracks approval/rejection status across re-renders
+
+Business logic integration: Only proceeds with approved budgets
+
+Custom UI: Renders an interactive approval card with approve/reject buttons
+
+Response handling: Sends the user's decision back to the agent
+*/
+useCopilotAction(
+{
+name: "request_budget_approval",
+description: "Request user approval for the travel budget",
+parameters: [
+{
+name: "budgetData",
+type: "object",
+description: "The budget breakdown data requiring approval",
+},
+],
+// renderAndWaitForResponse pauses agent execution until the user responds
+renderAndWaitForResponse: ({ args, respond }) => {
+// Step 1: Validate budget data structure
+if (!args.budgetData || typeof args.budgetData !== "object") {
+return (
+
+Loading budget data...
+
+);
+}
+const budget = args.budgetData as BudgetData;
+if (!budget.totalBudget || !budget.breakdown) {
+return (
+
+Loading budget data...
+
+);
+}
+// Step 2: Create a unique key for this budget to track approval state
+const budgetKey = budget-${budget.totalBudget};
+const currentState = approvalStates[budgetKey] || {
+approved: false,
+rejected: false,
+};
+// Step 3: Define approval handler - updates state and responds to agent
+const handleApprove = () => {
+setApprovalStates((prev) => ({
+...prev,
+[budgetKey]: { approved: true, rejected: false },
+}));
+// Send approval response back to the agent to continue the workflow
+respond?.({ approved: true, message: "Budget approved by user" });
+};
+// Step 4: Define rejection handler - updates state and responds to agent
+const handleReject = () => {
+setApprovalStates((prev) => ({
+...prev,
+[budgetKey]: { approved: false, rejected: true },
+}));
+// Send rejection response back to the agent to handle accordingly
+respond?.({ approved: false, message: "Budget rejected by user" });
+};
+// Step 5: Render interactive budget approval card
+return (
+
+);
+},
+},
+[approvalStates] // Re-register when approval states change
+);
+
+// ...
+return (
+
+{/* ... */}
+
+);
+```
+
+When an agent triggers frontend actions by tool/action name to request human input or feedback during execution, the end-user is prompted with a choice (rendered inside the chat UI). Then the user can choose by pressing a button in the chat UI, as shown below.
+
+![Image 8: Image from Notion](https://cdn.prod.website-files.com/669a24c14f4dcb77f6f97034/68e6d7ce56e9f55017c2c796_https%253A%252F%252Fdev-to-uploads.s3.amazonaws.com%252Fuploads%252Farticles%252Fl77d9m78om3hvan8t68v.webp)
+
+### Step 6: Streaming Agent-to-Agent responses in the frontend
+
+To stream Agent-to-Agent responses in the frontend, define a useEffect() hook that parses AI agent responses to extract structured data (like itineraries, budgets, weather, or restaurant recommendations), as shown in the `components/travel-chat.tsx` file.
+
+```
+const ChatInner = ({
+onItineraryUpdate,
+onBudgetUpdate,
+onWeatherUpdate,
+onRestaurantUpdate,
+}: TravelChatProps) => {
+// State management for HITL budget approval workflow
+// Tracks approval/rejection status for different budget proposals
+const [approvalStates, setApprovalStates] = useState<
+Record<string, { approved: boolean; rejected: boolean }>
+
+({});
+
+// CopilotKit hook to access chat messages for data extraction
+// visibleMessages contains all messages currently displayed in the chat
+const { visibleMessages } = useCopilotChat();
+/**
+
+GENERATIVE UI FEATURE: Auto-extract structured data from agent responses
+
+This useEffect demonstrates CopilotKit's ability to automatically parse and
+extract structured data from AI agent responses, converting them into
+interactive UI components.
+
+Process:
+
+Monitor all visible chat messages for agent responses
+
+Parse JSON data from the A2A agent message results
+
+Identify data type (itinerary, budget, weather, restaurant)
+
+Update parent component state to render corresponding UI components
+
+Apply business logic (e.g., budget approval checks)
+*/
+useEffect(() => {
+const extractDataFromMessages = () => {
+// Step 1: Iterate through all visible messages in the chat
+for (const message of visibleMessages) {
+const msg = message as any;
+// Step 2: Filter for A2A agent response messages specifically
+if (
+msg.type === "ResultMessage" &&
+msg.actionName === "send_message_to_a2a_agent"
+) {
+try {
+const result = msg.result;
+let parsed;
+// Step 3: Parse the agent response data (handle both string and object formats)
+if (typeof result === "string") {
+  let cleanResult = result;
+  // Remove A2A protocol prefix if present
+  if (result.startsWith("A2A Agent Response: ")) {
+    cleanResult = result.substring("A2A Agent Response: ".length);
+  }
+  parsed = JSON.parse(cleanResult);
+} else if (typeof result === "object" && result !== null) {
+  parsed = result;
+}
+
+// Step 4: Identify data type and trigger appropriate UI updates
+if (parsed) {
+  // Itinerary data: destination + itinerary array
+  if (
+    parsed.destination &&
+    parsed.itinerary &&
+    Array.isArray(parsed.itinerary)
+  ) {
+    onItineraryUpdate?.(parsed as ItineraryData);
+  }
+  // Budget data: requires user approval before displaying
+  else if (
+    parsed.totalBudget &&
+    parsed.breakdown &&
+    Array.isArray(parsed.breakdown)
+  ) {
+    const budgetKey = `budget-${parsed.totalBudget}`;
+    const isApproved = approvalStates[budgetKey]?.approved || false;
+    // Step 5: Apply HITL approval check - only show if user approved
+    if (isApproved) {
+      onBudgetUpdate?.(parsed as BudgetData);
+    }
+  }
+  // Weather data: destination + forecast array
+  else if (
+    parsed.destination &&
+    parsed.forecast &&
+    Array.isArray(parsed.forecast)
+  ) {
+    const weatherDataParsed = parsed as WeatherData;
+    onWeatherUpdate?.(weatherDataParsed);
+  }
+  // Restaurant data: destination + meals array
+  else if (
+    parsed.destination &&
+    parsed.meals &&
+    Array.isArray(parsed.meals)
+  ) {
+    onRestaurantUpdate?.(parsed as RestaurantData);
+  }
+}
+
+} catch (e) {
+// Silently handle parsing errors - not all messages contain structured data
+}
+}
+}
+};
+
+extractDataFromMessages();
+
+}, [
+visibleMessages,
+approvalStates,
+onItineraryUpdate,
+onBudgetUpdate,
+onWeatherUpdate,
+onRestaurantUpdate,
+]);
+// ...
+return (
+
+{/* ... */}
+
+);
+};
+```
+
+Then the extracted structured data triggers UI updates to render interactive components, as shown in the `app/page.tsx` file.
+
+```
+"use client";
+import { useState } from "react";
+import TravelChat from "@/components/travel-chat";
+import { ItineraryCard, type ItineraryData } from "@/components/ItineraryCard";
+import { BudgetBreakdown, type BudgetData } from "@/components/BudgetBreakdown";
+import { WeatherCard, type WeatherData } from "@/components/WeatherCard";
+import { type RestaurantData } from "@/components/ItineraryCard";
+export default function Home() {
+const [itineraryData, setItineraryData] = useState<ItineraryData | null>(null);
+const [budgetData, setBudgetData] = useState<BudgetData | null>(null);
+const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+const [restaurantData, setRestaurantData] = useState<RestaurantData | null>(null);
+return (
+<div className="relative flex h-screen overflow-hidden bg-[#DEDEE9] p-2">
+  // ...
+
+  <div className="flex flex-1 overflow-hidden z-10 gap-2">
+
+    // ...
+
+    <div className="flex-1 overflow-hidden">
+      <TravelChat
+        onItineraryUpdate={setItineraryData}
+        onBudgetUpdate={setBudgetData}
+        onWeatherUpdate={setWeatherData}
+        onRestaurantUpdate={setRestaurantData}
+      />
+    </div>
+  </div>
+
+  <div className="flex-1 overflow-y-auto rounded-lg bg-white/30 backdrop-blur-sm">
+    <div className="max-w-5xl mx-auto p-8">
+
+      // ...
+
+      {itineraryData &amp;&amp; (
+        <div className="mb-4">
+          <ItineraryCard data={itineraryData} restaurantData={restaurantData} />
+        </div>
+      )}
+
+      {(weatherData || budgetData) &amp;&amp; (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {weatherData &amp;&amp; (
+            <div>
+              <WeatherCard data={weatherData} />
+            </div>
+          )}
+
+          {budgetData &amp;&amp; (
+            <div>
+              <BudgetBreakdown data={budgetData} />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  </div>
+  </div>
+</div>
+
+);
+}
+```
+
+If you query your agent and approve its feedback request, you should see the agent’s response or results streaming in the UI, as shown below.
+
+Conclusion
+----------
+
+In this guide, we have walked through the steps of building full-stack Agent-to-Agent communication using A2A + AG-UI protocols and CopilotKit.
+
+While we’ve explored a couple of features, we have barely scratched the surface of the countless use cases for CopilotKit, ranging from building interactive AI chatbots to building agentic solutions—in essence, CopilotKit lets you add a ton of useful AI capabilities to your products in minutes.
+
+Hopefully, this guide makes it easier for you to integrate AI-powered Copilots into your existing application.
+
+Follow CopilotKit on [Twitter](https://go.copilotkit.ai/socials-twitter) and say hi, and if you'd like to build something cool, join the [Discord](https://go.copilotkit.ai/discord-community) community.
+
+‍

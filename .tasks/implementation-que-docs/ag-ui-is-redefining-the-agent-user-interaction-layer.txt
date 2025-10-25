@@ -1,0 +1,102 @@
+Title: CopilotKit | The Agentic Framework for In-App AI Copilots
+
+URL Source: http://www.copilotkit.ai/blog/ag-ui-is-redefining-the-agent-user-interaction-layer
+
+Markdown Content:
+The AG-UI Protocol continues to surge - and with it, a new standard is forming across the agentic landscape.
+
+AG-UI isn’t just another SDK or framework that has emerged. It’s an open protocol for agent <> user communication, enabling real-time collaboration between humans and agents across any app, platform, or framework.
+
+In the simplest form, it’s the bridge between the agent and the user.
+
+A little bit of a backstory - what started as an internal solution inside the CopilotKit ecosystem, has grown into an open-source movement - now being adopted, extended, and accelerated by large scale teams across the industry.
+
+“The future of agents isn’t one company or one platform - it’s an agentic ecosystem connected by protocols.”
+
+— _CopilotKit Team_
+
+The Protocol Triangle: MCP + A2A + AG-UI
+----------------------------------------
+
+![Image 1: __wf_reserved_inherit](https://cdn.prod.website-files.com/669a24c14f4dcb77f6f97034/682cdd70d3e974f3662a0ea4_MCP%2C%20AG-UI%20Diagram_1%20(1).png)
+
+Agent Stack Triangle
+
+Together, MCP, A2A, and AG-UI form what we call the Protocol Triangle that equals the new foundation of the agentic ecosystem.
+
+Each protocol plays a unique but connected role:
+
+1.   **MCP** → defines how agents communicate with tools and APIs
+2.   **A2A** → defines how agents communicate with other agents
+3.   **AG-UI** → defines how agents communicate with users
+
+This triad enables a new generation of _collaborative systems,_ where humans, agents, and applications share context, take actions, and learn together in real time.
+
+Highlights from the Past Month
+------------------------------
+
+The AG-UI and CopilotKit ecosystem has been growing at an unprecedented pace. A few key milestones:
+
+*   **Google’s ADK officially joined the AG-UI ecosystem** - releasing their integration and enabling ADK agents to collaborate with users via the AG-UI protocol.
+
+![Image 2: __wf_reserved_inherit](https://cdn.prod.website-files.com/669a24c14f4dcb77f6f97034/68f2881c66a402e0a72fa655_image%20(3).png)
+
+*   **The “Fullstack Agents” Hackathon SF** brought developers together to build with MCP, A2A, and AG-UI - showing the power of multi-agent collaboration.
+
+![Image 3: __wf_reserved_inherit](https://cdn.prod.website-files.com/669a24c14f4dcb77f6f97034/68f28844205b09294310c011_image%20(4).png)
+
+*   **CopilotKit surpassed 2 million agent-user interactions per week**, doubling in just two weeks.
+
+![Image 4: __wf_reserved_inherit](https://cdn.prod.website-files.com/669a24c14f4dcb77f6f97034/68f2885dfd084a7f7486ba8c_image%20(5).png)
+
+*   **AG-UI crossed 9,000 GitHub stars ⭐️**, one of the fastest-growing open-source protocol projects in the space.
+*   **AG-UI + CopilotKit hit 120,000 weekly installs** - an explosive milestone that shows how fast developers are adopting this new protocol layer.
+
+![Image 5: __wf_reserved_inherit](https://cdn.prod.website-files.com/669a24c14f4dcb77f6f97034/68f288768ed38c769409d0f7_image%20(6).png)
+
+_Weekly installs (Oct 2024 → Sep 2025)_
+
+The Handshake 🤝 Heard Around the Ecosystem
+-------------------------------------------
+
+![Image 6: __wf_reserved_inherit](https://cdn.prod.website-files.com/669a24c14f4dcb77f6f97034/68f28894faa88646ca723ece_image%20(7).png)
+
+This month also marked the **official handshake between A2A and AG-UI** - connecting agent-to-agent and agent-to-user communication layers for the first time.
+
+And two other giants 🧐 - (you’ll have to guess who they are 😁) - are now actively building their own integrations. More on that soon.
+
+The Bigger Picture
+------------------
+
+This isn’t just about numbers. It’s about interoperability becoming inevitable.
+
+Developers are no longer constrained by silos — they can now connect agents, apps, and humans under one shared language of interaction.
+
+AG-UI’s rapid adoption signals something bigger:
+
+The agentic web is becoming standardized.
+
+What’s Next
+-----------
+
+The CopilotKit team and AG-UI community are already working on what’s next:
+
+*   Expanding SDK support - now including **TypeScript**, **Python**, **Kotlin, Java, and Golang**
+    *   **Rust** (coming soon)
+
+*   Deepening integrations across MCP and ADK
+*   Designing **new collaboration features** that make agent-user experiences more intuitive, shared, and human
+
+If you’re building agents, or platforms where humans and agents collaborate - AG-UI is the protocol to watch.
+
+**Explore More:**
+
+*   [AG-UI on GitHub](https://github.com/ag-ui-protocol/ag-ui)
+*   [AG-UI Docs](https://docs.ag-ui.com/introduction)
+*   [Atai Barkai’s Original Announcement Post](https://www.linkedin.com/posts/atai-barkai_introducing-ag-ui-the-agent-user-interaction-ugcPost-7327747174656544769-fMBD)
+
+#### Follow CopilotKit on [Twitter](https://go.copilotkit.ai/socials-twitter) and say hi, and if you'd like to build something cool, join our active [Discord](https://go.copilotkit.ai/discord-community) community of agentic builders.
+
+#### ‍
+
+Happy Building!
