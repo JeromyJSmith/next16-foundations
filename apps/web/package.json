@@ -11,6 +11,7 @@
 		"desktop:build": "tauri build"
 	},
 	"dependencies": {
+		"@hookform/resolvers": "^5.2.2",
 		"@live-steam-app/api": "workspace:*",
 		"@tanstack/react-form": "^1.23.8",
 		"@tanstack/react-query": "^5.90.5",
@@ -26,6 +27,8 @@
 		"radix-ui": "^1.4.3",
 		"react": "19.2.0",
 		"react-dom": "19.2.0",
+		"react-hook-form": "^7.65.0",
+		"shadcn-ui": "^0.9.5",
 		"sonner": "^2.0.7",
 		"tailwind-merge": "^3.3.1",
 		"zod": "catalog:"
