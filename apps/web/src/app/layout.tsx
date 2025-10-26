@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import { CopilotKit } from "@copilotkit/react-core";
+import type { Metadata } from "next";
 import "@copilotkit/react-ui/styles.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
 	title: "Live Steam App",
-	description: "AI-powered live streaming application with agent-driven components",
+	description:
+		"AI-powered live streaming application with agent-driven components",
 };
 
 interface RootLayoutProps {

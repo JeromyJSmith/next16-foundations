@@ -6,6 +6,8 @@ node_modules
 # Build outputs
 dist
 build
+/.next
+/.next/dev
 *.tsbuildinfo
 
 # Environment variables
@@ -56,3 +58,14 @@ apps/web/.env.example
 .cache
 tmp
 temp
+
+# Gemini-related files and directories
+.cursor/
+mcp.json
+.tasks/
+CACHE_COMPONENTS_SETUP_SUMMARY.md
+CACHE_INVALIDATION_STRATEGY.md
+CLONE_VERIFICATION_CHECKLIST.md
+EXECUTION_READY_CHECKLIST.md
+PLAN_COMPLETION_SUMMARY.md
+YAML_PLAN_PREPARATION_SUMMARY.md

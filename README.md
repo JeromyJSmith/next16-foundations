@@ -17,7 +17,42 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 - **Tauri** - Build native desktop applications
 - **Turborepo** - Optimized monorepo build system
 
+## Next.js 16 Features
+
+This project leverages the latest features of Next.js 16.0.1-canary.2, including:
+
+*   **React Compiler:** Enabled for automatic component memoization and reduced re-renders.
+*   **Cache Components:** Advanced caching mechanisms with configurable profiles (`seconds`, `minutes`, `hours`, `days`, `agents`) for optimized data fetching and revalidation.
+*   **Async Server Components:** Full support for `await` in `params`, `searchParams`, `cookies()`, and `headers()`.
+*   **Turbopack:** Default bundler for faster development and build times.
+
+For a detailed guide on these features and migration patterns, refer to [NEXT16_MIGRATION_GUIDE.md](./NEXT16_MIGRATION_GUIDE.md).
+
 ## Getting Started
+
+### Quick Start for New Developers
+
+To get the project up and running quickly:
+
+1.  **Install dependencies:**
+    ```bash
+    pnpm install
+    ```
+2.  **Setup Python agents:**
+    ```bash
+    cd agents && uv venv && uv sync
+    ```
+3.  **Database Setup:**
+    *   Ensure PostgreSQL is running.
+    *   Configure `apps/web/.env` with your database details.
+    *   Apply schema: `pnpm db:push`
+4.  **Run development server:**
+    ```bash
+    pnpm dev
+    ```
+    Open [http://localhost:3001](http://localhost:3001) in your browser.
+
+### Detailed Installation
 
 First, install the dependencies:
 
@@ -78,3 +113,9 @@ live-steam-app/
 - `cd apps/web && pnpm generate-pwa-assets`: Generate PWA assets
 - `cd apps/web && pnpm desktop:dev`: Start Tauri desktop app in development
 - `cd apps/web && pnpm desktop:build`: Build Tauri desktop app
+
+## Troubleshooting
+
+*   **"No tasks were executed" during `pnpm check-types`:** Ensure `check-types` scripts are defined in each package's `package.json` (e.g., `"check-types": "tsc --noEmit"`).
+*   **Cache-related issues:** Refer to [NEXT16_MIGRATION_GUIDE.md](./NEXT16_MIGRATION_GUIDE.md) for detailed explanations of cache profiles, `cacheTag`, `revalidateTag`, and `updateTag`.
+*   **Agent connectivity:** Verify Python agents are running (`pnpm dev:agents`) and check their logs for errors.

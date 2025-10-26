@@ -7,17 +7,17 @@
 
 "use client";
 
-import { CopilotChat } from "@copilotkit/react-ui";
 import { useCopilotAction } from "@copilotkit/react-core";
-import { useState, useEffect } from "react";
+import { CopilotChat } from "@copilotkit/react-ui";
+import { useEffect, useState } from "react";
 import styles from "./copilot-chat.module.css";
 
 /**
  * Props for the CopilotChat component
  */
 interface CopilotChatProps {
-	onComponentGenerated?: (component: any) => void;
-	onAgentMessage?: (message: any) => void;
+	onComponentGenerated?: (component: unknown) => void;
+	onAgentMessage?: (message: unknown) => void;
 	className?: string;
 }
 
@@ -36,7 +36,7 @@ export function CopilotChatComponent({
 	onAgentMessage,
 	className,
 }: CopilotChatProps) {
-	const [visibleMessages, setVisibleMessages] = useState<any[]>([]);
+	const [_visibleMessages, _setVisibleMessages] = useState<unknown[]>([]);
 
 	/**
 	 * Register A2A communication action
@@ -59,7 +59,7 @@ export function CopilotChatComponent({
 				description: "The message/task to send to the A2A agent",
 			},
 		],
-		render: (actionRenderProps: any) => (
+		render: (actionRenderProps: unknown) => (
 			<A2AMessageVisualization
 				{...actionRenderProps}
 				onMessage={onAgentMessage}
@@ -88,7 +88,7 @@ export function CopilotChatComponent({
 				description: "The generated component TypeScript code",
 			},
 		],
-		render: (actionRenderProps: any) => (
+		render: (actionRenderProps: unknown) => (
 			<ComponentPreview
 				{...actionRenderProps}
 				onGenerated={onComponentGenerated}
@@ -98,9 +98,7 @@ export function CopilotChatComponent({
 
 	return (
 		<div className={`${styles.chatContainer} ${className || ""}`}>
-			<CopilotChat
-				className={styles.chat}
-			/>
+			<CopilotChat className={styles.chat} />
 		</div>
 	);
 }
@@ -111,7 +109,15 @@ export function CopilotChatComponent({
  * Shows incoming/outgoing messages between orchestrator and A2A agents
  * with visual indication of agent communication flow
  */
-function A2AMessageVisualization({ args, result, onMessage }: any) {
+function A2AMessageVisualization({
+	args,
+	result,
+	onMessage,
+}: {
+	args: unknown;
+	result: unknown;
+	onMessage: unknown;
+}) {
 	useEffect(() => {
 		if (args || result) {
 			onMessage?.({
@@ -149,7 +155,11 @@ function ComponentPreview({
 	args,
 	respond,
 	onGenerated,
-}: any) {
+}: {
+	args: unknown;
+	respond: unknown;
+	onGenerated: unknown;
+}) {
 	const [showCode, setShowCode] = useState(false);
 
 	useEffect(() => {
@@ -165,7 +175,11 @@ function ComponentPreview({
 		<div className={styles.componentPreview}>
 			<div className={styles.componentHeader}>
 				<h3>{args?.componentName}</h3>
-				<button onClick={() => setShowCode(!showCode)} className={styles.toggleButton}>
+				<button
+					type="button"
+					onClick={() => setShowCode(!showCode)}
+					className={styles.toggleButton}
+				>
 					{showCode ? "Hide Code" : "Show Code"}
 				</button>
 			</div>
@@ -178,12 +192,14 @@ function ComponentPreview({
 
 			<div className={styles.componentActions}>
 				<button
+					type="button"
 					onClick={() => respond?.({ action: "accept" })}
 					className={`${styles.button} ${styles.primary}`}
 				>
 					Use Component
 				</button>
 				<button
+					type="button"
 					onClick={() => respond?.({ action: "regenerate" })}
 					className={`${styles.button} ${styles.secondary}`}
 				>

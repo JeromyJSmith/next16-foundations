@@ -24,7 +24,8 @@
 			"!**/.alchemy",
 			"!**/.svelte-kit",
 			"!**/wrangler.jsonc",
-			"!**/.source"
+			"!**/.source",
+			"!apps/docs/.astro/content.d.ts"
 		]
 	},
 	"css": {
@@ -37,7 +38,11 @@
 		"enabled": true,
 		"indentStyle": "tab"
 	},
-	"assist": { "actions": { "source": { "organizeImports": "on" } } },
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double"
+		}
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
@@ -65,12 +70,17 @@
 				"useNumberNamespace": "error",
 				"noInferrableTypes": "error",
 				"noUselessElse": "error"
+			},
+			"suspicious": {
+				"noUnknownAtRules": "off"
 			}
 		}
 	},
-	"javascript": {
-		"formatter": {
-			"quoteStyle": "double"
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
 		}
 	}
 }

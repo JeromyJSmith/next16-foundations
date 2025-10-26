@@ -7,32 +7,34 @@
 
 "use client";
 
-import { CopilotChatComponent } from "@/components/copilot-chat";
 import { useState } from "react";
+import { CopilotChatComponent } from "@/components/copilot-chat";
 
 export default function Home() {
-	const [generatedComponents, setGeneratedComponents] = useState<any[]>([]);
-	const [agentMessages, setAgentMessages] = useState<any[]>([]);
+	const [generatedComponents, setGeneratedComponents] = useState<unknown[]>([]);
+	const [agentMessages, setAgentMessages] = useState<unknown[]>([]);
 
 	return (
-		<main className="min-h-screen w-full flex flex-col">
+		<main className="flex min-h-screen w-full flex-col">
 			{/* Header */}
-			<header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 px-6 py-4 shadow-sm">
-				<div className="max-w-7xl mx-auto">
-					<h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+			<header className="border-gray-200 border-b bg-white/80 px-6 py-4 shadow-sm backdrop-blur-sm">
+				<div className="mx-auto max-w-7xl">
+					<h1 className="bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text font-bold text-3xl text-transparent">
 						🚀 Live Steam App
 					</h1>
-					<p className="text-gray-600 mt-1">
+					<p className="mt-1 text-gray-600">
 						AI-powered agent orchestration with real-time component generation
 					</p>
 				</div>
 			</header>
 
 			{/* Main Content */}
-			<div className="flex-1 flex flex-col gap-6 p-6 max-w-7xl mx-auto w-full">
+			<div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-6">
 				{/* Chat Section */}
-				<div className="flex-1 min-h-96">
-					<h2 className="text-xl font-semibold text-gray-900 mb-4">Agent Chat</h2>
+				<div className="min-h-96 flex-1">
+					<h2 className="mb-4 font-semibold text-gray-900 text-xl">
+						Agent Chat
+					</h2>
 					<CopilotChatComponent
 						onComponentGenerated={(component) => {
 							setGeneratedComponents((prev) => [...prev, component]);
@@ -46,22 +48,22 @@ export default function Home() {
 				{/* Generated Components Display */}
 				{generatedComponents.length > 0 && (
 					<div className="mt-6">
-						<h2 className="text-xl font-semibold text-gray-900 mb-4">
+						<h2 className="mb-4 font-semibold text-gray-900 text-xl">
 							Generated Components ({generatedComponents.length})
 						</h2>
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+						<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 							{generatedComponents.map((component, idx) => (
 								<div
-									key={idx}
-									className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+									key={component.id || `generated-${idx}`}
+									className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
 								>
-									<h3 className="font-semibold text-gray-900 mb-2">
+									<h3 className="mb-2 font-semibold text-gray-900">
 										{component.name}
 									</h3>
-									<p className="text-sm text-gray-500 mb-3">
+									<p className="mb-3 text-gray-500 text-sm">
 										Type: {component.type || "component"}
 									</p>
-									<pre className="bg-gray-50 p-2 rounded text-xs overflow-auto max-h-40 border border-gray-200">
+									<pre className="max-h-40 overflow-auto rounded border border-gray-200 bg-gray-50 p-2 text-xs">
 										<code>{component.code?.substring(0, 200)}...</code>
 									</pre>
 								</div>
@@ -73,12 +75,15 @@ export default function Home() {
 				{/* Agent Communication Log */}
 				{agentMessages.length > 0 && (
 					<div className="mt-6">
-						<h2 className="text-xl font-semibold text-gray-900 mb-4">
+						<h2 className="mb-4 font-semibold text-gray-900 text-xl">
 							Agent Communications ({agentMessages.length})
 						</h2>
-						<div className="bg-gray-900 text-gray-100 rounded-lg p-4 font-mono text-sm max-h-64 overflow-auto">
+						<div className="max-h-64 overflow-auto rounded-lg bg-gray-900 p-4 font-mono text-gray-100 text-sm">
 							{agentMessages.map((msg, idx) => (
-								<div key={idx} className="mb-2 pb-2 border-b border-gray-700">
+								<div
+									key={msg.id || `agent-msg-${idx}`}
+									className="mb-2 border-gray-700 border-b pb-2"
+								>
 									<span className="text-blue-400">{msg.agent}:</span>
 									<span className="ml-2 text-gray-300">{msg.task}</span>
 								</div>
@@ -89,10 +94,11 @@ export default function Home() {
 			</div>
 
 			{/* Footer */}
-			<footer className="bg-white/80 backdrop-blur-sm border-t border-gray-200 px-6 py-4 mt-auto">
-				<div className="max-w-7xl mx-auto text-center text-sm text-gray-600">
+			<footer className="mt-auto border-gray-200 border-t bg-white/80 px-6 py-4 backdrop-blur-sm">
+				<div className="mx-auto max-w-7xl text-center text-gray-600 text-sm">
 					<p>
-						Powered by A2A Protocol, AG-UI, CopilotKit, Google ADK, and LangGraph
+						Powered by A2A Protocol, AG-UI, CopilotKit, Google ADK, and
+						LangGraph
 					</p>
 					<p className="mt-1">
 						<a
